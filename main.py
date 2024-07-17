@@ -43,14 +43,22 @@ def outage_prob_simulation():
 
 
     # curve 저장
-    np.save(f"./Curves/outage_prob_{3}_{2}", P_out_values_3_2)
-    np.save(f"./Curves/outage_prob_{3}_{4}", P_out_values_3_4)
-    np.save(f"./Curves/outage_prob_{3}_{8}", P_out_values_3_8)
+    np.save(f"./Curves/outage_prob_{3}_{2}", np.array([rho_values,P_out_values_3_2]))
+    np.save(f"./Curves/outage_prob_{3}_{4}", np.array([rho_values, P_out_values_3_4]))
+    np.save(f"./Curves/outage_prob_{3}_{8}", np.array([narrow_rho_values, P_out_values_3_8]))
 
-    np.save(f"./Curves/outage_prob_{2}_{2}", P_out_values_2_2)
-    np.save(f"./Curves/outage_prob_{2}_{4}", P_out_values_2_4)
-    np.save(f"./Curves/outage_prob_{2}_{8}", P_out_values_2_8)
+    np.save(f"./Curves/outage_prob_{2}_{2}", np.array([rho_values, P_out_values_2_2]))
+    np.save(f"./Curves/outage_prob_{2}_{4}", np.array([rho_values, P_out_values_2_4]))
+    np.save(f"./Curves/outage_prob_{2}_{8}", np.array([narrow_rho_values, P_out_values_2_8]))
 
 
-#outage_prob_simulation()
-outage_prob_plot(np.array([rho_values, narrow_rho_values]))
+outage_prob_simulation()
+outage_prob_plot()
+'''
+# print(narrow_rho_values, 10*np.log10(narrow_rho_values))
+
+# print(outage_probability(2, 8, P, delta, eta, Omega_S, Omega_I, epsilon_0,  31.6227766))
+  L = 2, N  = 8, Transmit SNR(rho) = 15dB (linear scale : 31.6227766)
+  --> when iter 2e+7, result is 0.0
+  --> when iter 5e+7, result is 4e-8
+'''

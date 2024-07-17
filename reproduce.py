@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 
-def outage_prob_plot(x_values):
+def outage_prob_plot():
     P_out_values_3_2 = np.load(f"./Curves/outage_prob_3_2.npy")
     P_out_values_3_4 = np.load(f"./Curves/outage_prob_3_4.npy")
     P_out_values_3_8 = np.load(f"./Curves/outage_prob_3_8.npy")
@@ -15,13 +15,13 @@ def outage_prob_plot(x_values):
     plt.figure(figsize=(8, 8))
     plt.title('Outage Probability vs. Transmit SNR')
 
-    plt.plot(10 * np.log10(x_values[0]), P_out_values_3_2, 'bo-', label=f'Outage Probability with L=3, N=2')
-    plt.plot(10 * np.log10(x_values[0]), P_out_values_3_4, 'b>-', label=f'Outage Probability with L=3, N=4')
-    plt.plot(10 * np.log10(x_values[1]), P_out_values_3_8, 'b^-', label=f'Outage Probability with L=3, N=8')
+    plt.plot(10 * np.log10(P_out_values_3_2[0]), P_out_values_3_2[1], 'bo-', label=f'Outage Probability with L=3, N=2')
+    plt.plot(10 * np.log10(P_out_values_3_4[0]), P_out_values_3_4[1], 'b>-', label=f'Outage Probability with L=3, N=4')
+    plt.plot(10 * np.log10(P_out_values_3_8[0]), P_out_values_3_8[1], 'b^-', label=f'Outage Probability with L=3, N=8')
 
-    plt.plot(10 * np.log10(x_values[0]), P_out_values_2_2, 'ro-', label=f'Outage Probability with L=2, N=2')
-    plt.plot(10 * np.log10(x_values[0]), P_out_values_2_4, 'r>-', label=f'Outage Probability with L=2, N=4')
-    plt.plot(10 * np.log10(x_values[1]), P_out_values_2_8, 'r^-', label=f'Outage Probability with L=2, N=8')
+    plt.plot(10 * np.log10(P_out_values_2_2[0]), P_out_values_2_2[1], 'ro-', label=f'Outage Probability with L=2, N=2')
+    plt.plot(10 * np.log10(P_out_values_2_4[0]), P_out_values_2_4[1], 'r>-', label=f'Outage Probability with L=2, N=4')
+    plt.plot(10 * np.log10(P_out_values_2_8[0]), P_out_values_2_8[1], 'r^-', label=f'Outage Probability with L=2, N=8')
 
     plt.yscale('log', base=10)
     plt.yticks([10**-8, 10**-6, 10**-4, 10**-2, 10**0])

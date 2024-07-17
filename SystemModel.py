@@ -58,7 +58,7 @@ def cdf_gn_squared(x):
 def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
-    num_simulations = int(1e+7)
+    num_simulations = int(5e+7)
     pbar = tqdm(range(num_simulations))
     for i in pbar:
         pbar.set_description(f"Outage simulation when L={L} N={N}")
