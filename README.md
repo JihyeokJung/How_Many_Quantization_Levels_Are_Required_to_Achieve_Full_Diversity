@@ -1,5 +1,6 @@
 ## Thesis Implementation 
-### Reconfigurable Intelligent Surfaces-Assisted Communications With Discrete Phase Shifts: How Many Quantization Levels Are Required to Achieve Full Diversity?
+### Reconfigurable Intelligent Surfaces-Assisted Communications With Discrete Phase Shifts: How Many Quantization Levels Are Required to Achieve Full Diversity? //
+Peng Xu; Gaojie Chen; Zheng Yang; Marco Di Renzo
 </hr>
 Paper URL : [https://ieeexplore.ieee.org/abstract/document/9223720]  
 
