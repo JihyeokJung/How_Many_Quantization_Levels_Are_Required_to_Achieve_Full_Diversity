@@ -25,3 +25,4 @@ epsilon_0 = (2 ** R0 - 1) / (eta ** 2 * Omega_S * Omega_I)
 fig_num = 1
 outage_prob_plot(fig_num)
 
+ss
