@@ -2,6 +2,8 @@ import numpy as np
 from scipy.special import kn
 from tqdm import tqdm, trange
 
+from scipy.linalg import svd
+
 
 def init_system(N, Omega_S, Omega_I, delta):
     # Channel vectors : follwing complex gaussian distribution with 0 mean, Omega variance
@@ -60,7 +62,7 @@ def cdf_gn_squared(x):
 def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
-    num_simulations = int(5e+7)
+    num_simulations = int(1e+5)
     pbar = tqdm(range(num_simulations))
     for _ in pbar:
         pbar.set_description(f"Outage simulation when L={L} N={N}")
@@ -80,28 +82,33 @@ def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     return P_G_N
 
 
-def calc_opt_sc_phase(h_SI, h_ID):
-    # 각 채널 벡터의 argument
-    theta_1 = np.angle(h_SI)
-    theta_2 = np.angle(h_ID)
+def calc_opt_sc_phase(h_SI, h_ID, N):
 
-    # optimal phase
-    SC_phi_opt = - (theta_1 + theta_2)
-    SC_phi_opt = np.diag(np.exp(1j * SC_phi_opt))
+    h_SI_ID = h_SI * h_ID
+    #opt_phase = -np.angle(h_SI_ID)
 
-    return SC_phi_opt
+    opt_phase = np.random.uniform(-np.pi/100, np.pi/100, N)
+
+    # Adjust the phases to be within the range [0, 2π)
+    #opt_phi = np.mod(opt_phi, 2 * np.pi)
+
+    # opt_phi = np.abs(opt_phi)
+
+    Phi = np.diag(np.exp(1j * opt_phase))
+
+    return Phi
 
 
 def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
-    num_simulations = int(5e+7)
+    num_simulations = int(1e+5)
     pbar = tqdm(range(num_simulations))
     for _ in pbar:
         pbar.set_description(f"Outage simulation when N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        Phi = calc_opt_sc_phase(h_SI, h_ID)
+        Phi = calc_opt_sc_phase(h_SI, h_ID, N)
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
@@ -115,17 +122,20 @@ def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
     return P_G_N
 
 
+def calc_opt_fc_phase(h_SI, h_ID):
+    u_SI = h_SI / np.linalg.norm(h_SI)
+    u_ID = h_ID / np.linalg.norm(h_ID)
 
-def generate_opt_BD_phase(h1, h2):
-    S = h2.conj().T @ h1.conj().T + h1 @ h2
+    A = np.outer(u_SI, u_ID.conjugate().T) + np.outer(u_SI, u_ID.conjugate().T).T
 
     # Takagi factorization
-    U, Sigma, Vh = svd(S)
-    V1 = U
-    V2 = np.diag(Sigma) @ Vh
+    a = svd(A)
 
-    V = V1 @ V2
-    FC_phi_opt = V @ V.T
+    Q = a[0]
+    Sigma = a[1]
+    QT = a[2].T
+
+    FC_phi_opt = Q @ QT
 
     return FC_phi_opt
 

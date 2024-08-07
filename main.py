@@ -22,7 +22,32 @@ epsilon_0 = (2 ** R0 - 1) / (eta ** 2 * Omega_S * Omega_I)
 
 # opt_sc_outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0)
 
-fig_num = 1
-outage_prob_plot(fig_num)
+# fig_num = 2
+# outage_prob_plot(fig_num)
 
-ss
+
+
+rho_values = np.logspace(0, 4.5, 10)
+
+opt_sc_P_out_values_2 = np.array(
+    [opt_sc_outage_probability(4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
+
+plt.figure(figsize=(8, 8))
+plt.title('Outage Probability vs. Transmit SNR')
+
+P_out_values_3_2 = np.array(
+    [outage_probability(3, 4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
+
+plt.plot(10 * np.log10(rho_values), opt_sc_P_out_values_2, 'rs-', label=f'Optimal Outage Probability')
+plt.plot(10 * np.log10(rho_values), P_out_values_3_2, 'bo-', label=f'Outage Probability with L=3')
+
+plt.yscale('log', base=10)
+plt.yticks([10 ** -8, 10 ** -6, 10 ** -4, 10 ** -2, 10 ** 0])
+plt.xlim(0, 45)
+plt.ylim(10 ** -8, 10 ** 0)
+plt.xlabel('Transmit SNR(dB)')
+plt.ylabel('Outage Probability')
+plt.legend()
+plt.grid(True)
+plt.show()
+

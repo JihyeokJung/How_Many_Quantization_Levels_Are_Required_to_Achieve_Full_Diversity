@@ -4,7 +4,7 @@ import os
 from SystemModel import *
 
 
-def outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0, num_simulations):
+def outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0):
     # rho values to infinity
     rho_values = np.logspace(0, 4.5, 10)
     narrow_rho_values = np.logspace(0, 2.25, 10)
@@ -13,7 +13,7 @@ def outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0, num_simul
     L = 3
 
     P_out_values_3_2 = np.array(
-        [outage_probability(L, 2, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho, num_simulations) for rho in rho_values])
+        [outage_probability(L, 2, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
     P_out_values_3_4 = np.array(
         [outage_probability(L, 4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
     # N = 8 이상 일 때는 outage  prob이 15dB 근처에서 0에 수렴함. -> rho values 세분화
