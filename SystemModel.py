@@ -82,23 +82,6 @@ def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     return P_G_N
 
 
-def calc_opt_sc_phase(h_SI, h_ID, N):
-
-    h_SI_ID = h_SI * h_ID
-    #opt_phase = -np.angle(h_SI_ID)
-
-    opt_phase = np.random.uniform(-np.pi/100, np.pi/100, N)
-
-    # Adjust the phases to be within the range [0, 2π)
-    #opt_phi = np.mod(opt_phi, 2 * np.pi)
-
-    # opt_phi = np.abs(opt_phi)
-
-    Phi = np.diag(np.exp(1j * opt_phase))
-
-    return Phi
-
-
 def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
@@ -108,7 +91,7 @@ def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
         pbar.set_description(f"Outage simulation when N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        Phi = calc_opt_sc_phase(h_SI, h_ID, N)
+        Phi = np.diag(np.exp(1j*np.zeros(N)))
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
