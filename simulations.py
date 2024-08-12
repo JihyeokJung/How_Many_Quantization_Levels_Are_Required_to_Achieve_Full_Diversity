@@ -86,3 +86,5 @@ def opt_fc_outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0):
     np.save(f"./Curves/FC_opt_outage_prob_{2}", np.array([rho_values, opt_fc_P_out_values_2]))
     np.save(f"./Curves/FC_opt_outage_prob_{4}", np.array([rho_values, opt_fc_P_out_values_4]))
     np.save(f"./Curves/FC_opt_outage_prob_{8}", np.array([narrow_rho_values, opt_fc_P_out_values_8]))
+
+

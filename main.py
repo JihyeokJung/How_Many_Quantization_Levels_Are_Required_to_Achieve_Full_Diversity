@@ -29,17 +29,15 @@ epsilon_0 = (2 ** R0 - 1) / (eta ** 2 * Omega_S * Omega_I)
 
 rho_values = np.logspace(0, 4.5, 10)
 
-opt_sc_P_out_values_2 = np.array(
-    [opt_sc_outage_probability(4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
+opt_fc_P_out_values_4 = np.array(
+    [opt_fc_outage_probability(4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
+opt_P_out_values_4 = np.load(f"./Curves/SC_opt_outage_prob_4.npy")
 
 plt.figure(figsize=(8, 8))
 plt.title('Outage Probability vs. Transmit SNR')
 
-P_out_values_3_2 = np.array(
-    [outage_probability(3, 4, P, delta, eta, Omega_S, Omega_I, epsilon_0, rho) for rho in rho_values])
-
-plt.plot(10 * np.log10(rho_values), opt_sc_P_out_values_2, 'rs-', label=f'Optimal Outage Probability')
-plt.plot(10 * np.log10(rho_values), P_out_values_3_2, 'bo-', label=f'Outage Probability with L=3')
+plt.plot(10 * np.log10(rho_values), opt_fc_P_out_values_4, 'rs-', label=f'Fully-connected Outage Probability with N=4')
+plt.plot(10 * np.log10(rho_values), opt_P_out_values_4[1], 'b--', label=f'Single-connected Outage Probability')
 
 plt.yscale('log', base=10)
 plt.yticks([10 ** -8, 10 ** -6, 10 ** -4, 10 ** -2, 10 ** 0])

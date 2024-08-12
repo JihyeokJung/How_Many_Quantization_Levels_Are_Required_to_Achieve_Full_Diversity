@@ -91,7 +91,8 @@ def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
         pbar.set_description(f"Outage simulation when N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        Phi = np.diag(np.exp(1j*np.zeros(N)))
+        Phi = np.diag(np.exp(1j * np.zeros(N)))
+        # Phi = np.diag(np.exp(-np.angle(h_SI * h_ID)))
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
@@ -106,33 +107,34 @@ def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
 
 
 def calc_opt_fc_phase(h_SI, h_ID):
-    u_SI = h_SI / np.linalg.norm(h_SI)
-    u_ID = h_ID / np.linalg.norm(h_ID)
+    h_SI = h_SI / np.linalg.norm(h_SI)
+    h_ID = h_ID / np.linalg.norm(h_ID)
 
-    A = np.outer(u_SI, u_ID.conjugate().T) + np.outer(u_SI, u_ID.conjugate().T).T
+    S = np.outer(h_ID.conjugate().T, h_SI.conjugate().T) + np.outer(h_SI.conjugate(), h_ID.conjugate())
 
     # Takagi factorization
-    a = svd(A)
+    a = svd(S)
 
     Q = a[0]
     Sigma = a[1]
     QT = a[2].T
 
-    FC_phi_opt = Q @ QT
+    Phi = Q @ QT
 
-    return FC_phi_opt
+    return Phi
 
 
 def opt_fc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
-    num_simulations = int(5e+6)
+    num_simulations = int(1e+5)
     pbar = tqdm(range(num_simulations))
     for i in pbar:
         pbar.set_description(f"Outage simulation when N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        Phi = generate_opt_sc_phase(h_SI, h_ID)
+        # Phi = calc_opt_fc_phase(h_SI, h_ID)
+        Phi = np.exp(1j * np.zeros(N * N)).reshape(N, N)
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
@@ -143,4 +145,5 @@ def opt_fc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
 
     # Outage probability
     P_G_N = prob_count / num_simulations
+
     return P_G_N
