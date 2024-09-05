@@ -29,15 +29,6 @@ def ReceivedSignal(P, eta, h_SI, Phi, h_ID, x_s, w_D):
     return ReceivedSignal
 
 
-def phase_error_generator(N, L):
-    # Phase errors uniformly distributed in [-pi/L, pi/L]
-    phase_errors = np.random.uniform(-np.pi / L, np.pi / L, N)
-
-    Phi = np.diag(np.exp(1j * phase_errors))
-
-    return phase_errors, Phi
-
-
 def SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I):
     rho = P / delta ** 2
     g_n = np.abs(h_SI * h_ID) @ Phi / np.sqrt(Omega_S * Omega_I)  # normalized channel coefficient
@@ -47,7 +38,15 @@ def SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I):
     return g_n, ReceivedSNR
 
 
-'''
+def get_phase_error(N, L):
+    # Phase errors uniformly distributed in [-pi/L, pi/L]
+    phase_errors = np.random.uniform(-np.pi / L, np.pi / L, N)
+
+    Phi = np.diag(np.exp(1j * phase_errors))
+
+    return phase_errors, Phi
+
+
 def cdf_gn_squared(x):
     if x <= 0:
         return 0.0
@@ -56,10 +55,9 @@ def cdf_gn_squared(x):
         return - x * np.log(x)  # When the x value is almost 0
     else:
         return 1 - 2 * np.sqrt(x) * kn(1, 2 * np.sqrt(x))
-'''
 
 
-def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
+def sc_outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
     num_simulations = int(1e+5)
@@ -68,7 +66,7 @@ def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
         pbar.set_description(f"Outage simulation when L={L} N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        _, Phi = phase_error_generator(N, L)
+        _, Phi = get_phase_error(N, L)
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
@@ -106,35 +104,40 @@ def opt_sc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
     return P_G_N
 
 
-def calc_opt_fc_phase(h_SI, h_ID):
-    h_SI = h_SI / np.linalg.norm(h_SI)
-    h_ID = h_ID / np.linalg.norm(h_ID)
+'''
+The above part is implemented according to the reference.
 
-    S = np.outer(h_ID.conjugate().T, h_SI.conjugate().T) + np.outer(h_SI.conjugate(), h_ID.conjugate())
-
-    # Takagi factorization
-    a = svd(S)
-
-    Q = a[0]
-    Sigma = a[1]
-    QT = a[2].T
-
-    Phi = Q @ QT
-
-    return Phi
+Assuming we know the channel, we can find the optimal phase, and map this optimal phase to the quantized phase level.
+'''
 
 
-def opt_fc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
+def get_phase(L, N, h_SI, h_ID):
+    quant_levels = np.linspace(0, 2 * np.pi, L, endpoint=False)
+
+    opt_phi = -np.angle(h_SI * h_ID)
+    opt_phi = np.mod(opt_phi, 2 * np.pi)
+
+    phi_quantized = np.zeros_like(opt_phi)  # 같은 크기의 zero matrix 생성
+    for n in range(N):
+        # Find the closest quantization level
+        idx = np.argmin(np.abs(quant_levels - opt_phi[n]))
+        phi_quantized[n] = quant_levels[idx]
+
+    Phi = np.diag(np.exp(1j * phi_quantized))
+
+    return opt_phi, Phi
+
+
+def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
     num_simulations = int(1e+5)
     pbar = tqdm(range(num_simulations))
-    for i in pbar:
-        pbar.set_description(f"Outage simulation when N={N}")
+    for _ in pbar:
+        pbar.set_description(f"Outage simulation when L={L} N={N}")
         # 변수 초기화
         h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
-        # Phi = calc_opt_fc_phase(h_SI, h_ID)
-        Phi = np.exp(1j * np.zeros(N * N)).reshape(N, N)
+        _, Phi = get_phase(L, N, h_SI, h_ID)
         g_n, _ = SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I)
 
         G_N = np.sum(g_n)
@@ -145,5 +148,28 @@ def opt_fc_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho
 
     # Outage probability
     P_G_N = prob_count / num_simulations
+    return P_G_N
 
+
+def opt_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
+    prob_count = 0
+
+    num_simulations = int(1e+5)
+    pbar = tqdm(range(num_simulations))
+    for _ in pbar:
+        pbar.set_description(f"Outage simulation when N={N}")
+        # 변수 초기화
+        h_SI, h_ID, _, _ = init_system(N, Omega_S, Omega_I, delta)
+        opt_phi = -np.angle(h_SI * h_ID)
+        opt_phi = np.mod(opt_phi, 2 * np.pi)
+        g_n, _ = SNR_calc(P, delta, eta, h_SI, opt_phi, h_ID, Omega_S, Omega_I)
+
+        G_N = np.sum(g_n)
+        G_N_sq = np.abs(G_N) ** 2
+
+        if G_N_sq < threshold / rho:
+            prob_count += 1
+
+    # Outage probability
+    P_G_N = prob_count / num_simulations
     return P_G_N
