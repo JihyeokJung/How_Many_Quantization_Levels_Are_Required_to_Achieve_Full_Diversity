@@ -18,7 +18,7 @@ def plot_slope(N, x_range, y_intercept, label):
 
 def outage_prob_plot(fig_num):
     if fig_num == 1:
-        fig_name = f"The outage probability versus the SNR_5e7"
+        fig_name = f"The outage probability versus the SNR"
 
         P_out_values_3_2 = np.load(f"./Curves/outage_prob_3_2.npy")
         P_out_values_3_4 = np.load(f"./Curves/outage_prob_3_4.npy")
@@ -110,13 +110,10 @@ def outage_prob_plot(fig_num):
         P_out_values_2_4 = np.load(f"./Curves/outage_prob_2_4.npy")
         P_out_values_2_8 = np.load(f"./Curves/outage_prob_2_8.npy")
 
-        opt_sc_P_out_values_2 = np.load(f"./Curves/SC_opt_outage_prob_2.npy")
-        opt_sc_P_out_values_4 = np.load(f"./Curves/SC_opt_outage_prob_4.npy")
-        opt_sc_P_out_values_8 = np.load(f"./Curves/SC_opt_outage_prob_8.npy")
+        opt_sc_P_out_values_2 = np.load(f"./Curves/opt_outage_prob_2.npy")
+        opt_sc_P_out_values_4 = np.load(f"./Curves/opt_outage_prob_4.npy")
+        opt_sc_P_out_values_8 = np.load(f"./Curves/opt_outage_prob_8.npy")
 
-        opt_fc_P_out_values_2 = np.load(f"./Curves/FC_opt_outage_prob_2.npy")
-        opt_fc_P_out_values_4 = np.load(f"./Curves/FC_opt_outage_prob_4.npy")
-        opt_fc_P_out_values_8 = np.load(f"./Curves/FC_opt_outage_prob_8.npy")
 
         plt.figure(figsize=(8, 8))
         plt.title('Outage Probability vs. Transmit SNR')
