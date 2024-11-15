@@ -33,7 +33,7 @@ def SNR_calc(P, delta, eta, h_SI, Phi, h_ID, Omega_S, Omega_I):
     rho = P / delta ** 2
     g_n = np.abs(h_SI * h_ID) @ Phi / np.sqrt(Omega_S * Omega_I)  # normalized channel coefficient
 
-    ReceivedSNR = rho * eta ** 2 * Omega_S * Omega_I * np.abs(np.sum(g_n)) ** 2
+    ReceivedSNR = rho * np.power(eta, 2) * Omega_S * Omega_I * np.abs(np.sum(g_n)) ** 2
 
     return g_n, ReceivedSNR
 
@@ -60,7 +60,7 @@ def cdf_gn_squared(x):
 def outage_probability(L, N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
     prob_count = 0
 
-    num_simulations = int(1e+5)
+    num_simulations = int(5e+8)
     pbar = tqdm(range(num_simulations))
     for _ in pbar:
         pbar.set_description(f"Outage simulation when L={L} N={N}")
@@ -107,7 +107,4 @@ def opt_outage_probability(N, P, delta, eta, Omega_S, Omega_I, threshold, rho):
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 The above part is implemented according to the reference.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-
-
 

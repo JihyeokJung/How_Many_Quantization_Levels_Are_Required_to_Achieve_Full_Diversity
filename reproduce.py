@@ -28,7 +28,7 @@ def outage_prob_plot(fig_num):
         P_out_values_2_4 = np.load(f"./Curves/outage_prob_2_4.npy")
         P_out_values_2_8 = np.load(f"./Curves/outage_prob_2_8.npy")
 
-        plt.figure(figsize=(8, 8))
+        plt.figure(figsize=(10, 8))
         plt.title('Outage Probability vs. Transmit SNR')
 
         plt.plot(10 * np.log10(P_out_values_3_2[0]), P_out_values_3_2[1], 'rs-', label=f'Outage Probability with L=3')
@@ -40,9 +40,11 @@ def outage_prob_plot(fig_num):
         plt.plot(10 * np.log10(P_out_values_2_8[0]), P_out_values_2_8[1], 'bo-')
 
 
-        plot_slope(2, np.linspace(37.5, 45, 1000), 2.1, None)
-        plot_slope(4, np.linspace(20, 45, 1000), 1.8, None)
-        plot_slope(8, np.linspace(5.5, 45, 100), -2, "Slope N")
+
+        plot_slope(2, np.linspace(39.5, 45, 1000), 2.1, None)
+        plot_slope(4, np.linspace(21.5, 45, 1000), 1.8, None)
+        plot_slope(8, np.linspace(7, 45, 1000), -1.45, "Slope N")
+
 
         plt.yscale('log', base=10)
         plt.yticks([10**-8, 10**-6, 10**-4, 10**-2, 10**0])
@@ -74,10 +76,10 @@ def outage_prob_plot(fig_num):
         plt.figure(figsize=(8, 8))
         plt.title('Outage Probability vs. Transmit SNR')
 
-        plt.plot(10 * np.log10(opt_sc_P_out_values_2[0]), opt_sc_P_out_values_2[1], 'm^--',
+        plt.plot(10 * np.log10(opt_sc_P_out_values_2[0]), opt_sc_P_out_values_2[1], 'm^-',
                  label=f'Optimal continuous diagonal phase shift matrix')
-        plt.plot(10 * np.log10(opt_sc_P_out_values_4[0]), opt_sc_P_out_values_4[1], 'm>--')
-        plt.plot(10 * np.log10(opt_sc_P_out_values_8[0]), opt_sc_P_out_values_8[1], 'm<--')
+        plt.plot(10 * np.log10(opt_sc_P_out_values_4[0]), opt_sc_P_out_values_4[1], 'm>-')
+        plt.plot(10 * np.log10(opt_sc_P_out_values_8[0]), opt_sc_P_out_values_8[1], 'm<-')
 
         plt.yscale('log', base=10)
         plt.yticks([10 ** -8, 10 ** -6, 10 ** -4, 10 ** -2, 10 ** 0])
@@ -110,18 +112,27 @@ def outage_prob_plot(fig_num):
         P_out_values_2_4 = np.load(f"./Curves/outage_prob_2_4.npy")
         P_out_values_2_8 = np.load(f"./Curves/outage_prob_2_8.npy")
 
-        opt_sc_P_out_values_2 = np.load(f"./Curves/opt_outage_prob_2.npy")
-        opt_sc_P_out_values_4 = np.load(f"./Curves/opt_outage_prob_4.npy")
-        opt_sc_P_out_values_8 = np.load(f"./Curves/opt_outage_prob_8.npy")
 
+        opt_sc_P_out_values_2 = np.load(f"./Curves/SC_opt_outage_prob_2.npy")
+        opt_sc_P_out_values_4 = np.load(f"./Curves/SC_opt_outage_prob_4.npy")
+        opt_sc_P_out_values_8 = np.load(f"./Curves/SC_opt_outage_prob_8.npy")
 
         plt.figure(figsize=(8, 8))
         plt.title('Outage Probability vs. Transmit SNR')
 
-        plt.plot(10 * np.log10(opt_fc_P_out_values_2[0]), opt_fc_P_out_values_2[1], 'y^--',
-                 label=f'')
-        plt.plot(10 * np.log10(opt_fc_P_out_values_4[0]), opt_fc_P_out_values_4[1], 'y>--')
-        plt.plot(10 * np.log10(opt_fc_P_out_values_8[0]), opt_fc_P_out_values_8[1], 'y<--')
+        plt.plot(10 * np.log10(P_out_values_3_2[0]), P_out_values_3_2[1], 'rs-', label=f'Outage Probability with L=3')
+        plt.plot(10 * np.log10(P_out_values_3_4[0]), P_out_values_3_4[1], 'rs-')
+        plt.plot(10 * np.log10(P_out_values_3_8[0]), P_out_values_3_8[1], 'rs-')
+
+        plt.plot(10 * np.log10(P_out_values_2_2[0]), P_out_values_2_2[1], 'bo-', label=f'Outage Probability with L=2')
+        plt.plot(10 * np.log10(P_out_values_2_4[0]), P_out_values_2_4[1], 'bo-')
+        plt.plot(10 * np.log10(P_out_values_2_8[0]), P_out_values_2_8[1], 'bo-')
+
+        plt.plot(10 * np.log10(opt_sc_P_out_values_2[0]), opt_sc_P_out_values_2[1], 'm^-',
+                 label=f'Optimal continuous diagonal phase shift matrix')
+        plt.plot(10 * np.log10(opt_sc_P_out_values_4[0]), opt_sc_P_out_values_4[1], 'm>-')
+        plt.plot(10 * np.log10(opt_sc_P_out_values_8[0]), opt_sc_P_out_values_8[1], 'm<-')
+
 
         plt.yscale('log', base=10)
         plt.yticks([10 ** -8, 10 ** -6, 10 ** -4, 10 ** -2, 10 ** 0])

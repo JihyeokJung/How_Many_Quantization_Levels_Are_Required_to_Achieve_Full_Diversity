@@ -14,14 +14,14 @@ delta = 0.1  # Variance of noise
 
 R0 = 1  # data rate in bits per channel use(BPCU)
 epsilon_0 = (2 ** R0 - 1) / (eta ** 2 * Omega_S * Omega_I)
-
+# epsilon_0 = (2 ** R0 - 1) / (Omega_S * Omega_I)
 
 """"""""""""""""""""""""""""""""""""""" RUN """""""""""""""""""""""""""""""""""""""""
 """  outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0)           """
 """  opt_sc_outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0)    """
 """"""""""""""""""""""""""""""""""""""" RUN """""""""""""""""""""""""""""""""""""""""
-
-
+# outage_prob_simulation(Omega_S, Omega_I, P, eta, delta, epsilon_0)
+# outage_prob_simulation(Omega_S, Omega_I, P, delta, epsilon_0)
 """"""""""""""""""""""""""""""""""""""" FIG """""""""""""""""""""""""""""""""""""""""
 """ fig_num = 1 : The outage probability versus the SNR with quantized RIS        """
 """ fig_num = 2 : The outage probability versus the SNR with optimal RIS          """
@@ -29,7 +29,4 @@ epsilon_0 = (2 ** R0 - 1) / (eta ** 2 * Omega_S * Omega_I)
 """                                                                               """
 """ outage_prob_plot(fig_num)                                                     """
 """"""""""""""""""""""""""""""""""""""" FIG """""""""""""""""""""""""""""""""""""""""
-outage_prob_plot(2)
-
-rho_values = np.logspace(0, 4.5, 10)
-narrow_rho_values = np.logspace(0, 2.25, 10)
+outage_prob_plot(1)
